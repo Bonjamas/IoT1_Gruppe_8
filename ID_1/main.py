@@ -3,11 +3,11 @@ from batteri import initialize_potmeter, calculate_voltage, calculate_battery_vo
 
 #####
 # CONFIGURATION
-PIN_POTMETER = 34  # GPIO-pin for potmeteret
+PIN_POTMETER = 36  # GPIO-pin for potmeteret
 
 # Kalibreringskonstanter for batterispænding
-VOLTAGE_LOW = 1070
-VOLTAGE_HIGH = 2430
+VOLTAGE_LOW = 1730
+VOLTAGE_HIGH = 2490
 a = (4.2 - 3.0) / (VOLTAGE_HIGH - VOLTAGE_LOW)
 b = 3.0 - a * VOLTAGE_LOW
 
@@ -26,7 +26,7 @@ try:
         battery_percentage = calculate_battery_percentage(battery_voltage)
 
         print(f"ADC Value: {adc_val}")
-        print(f"Measured Voltage: {uadc:.2f} V")
+        print(f"Measured Voltage bc spændingsdeler: {uadc:.2f} V")
         print(f"Battery Voltage: {battery_voltage:.2f} V")
         print(f"Battery Percentage: {battery_percentage:.2f}%\n")
 
