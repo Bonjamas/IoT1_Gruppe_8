@@ -1,5 +1,5 @@
 from time import sleep
-from functions import initialize_potmeter, calculate_voltage, calculate_battery_voltage, calculate_battery_percentage
+from batteri import initialize_potmeter, calculate_voltage, calculate_battery_voltage, calculate_battery_percentage
 
 #####
 # CONFIGURATION
