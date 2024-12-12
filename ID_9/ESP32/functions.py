@@ -6,7 +6,7 @@ from mpu6050 import MPU6050
 # BUZZER og NeoPixel-konfiguration
 n = 12  # Antal NeoPixels
 p = 12  # GPIO-pin til NeoPixel-striben
-buzzer = PWM(Pin(17, Pin.OUT), duty=0)
+buzzer = PWM(Pin(26, Pin.OUT), duty=0)
 np = NeoPixel(Pin(p, Pin.OUT), n)
 
 def initialize_imu():
