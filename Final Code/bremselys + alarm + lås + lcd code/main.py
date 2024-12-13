@@ -105,3 +105,4 @@ except KeyboardInterrupt:
     print("Afslutter program...")
     client.disconnect()
     np_clear()
+    lcd.clear()
