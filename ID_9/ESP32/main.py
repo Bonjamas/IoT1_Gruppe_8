@@ -1,67 +1,63 @@
-from time import sleep
+from time import sleep, time
+from machine import UART, Pin
+from gps_simple import GPS_SIMPLE
 from uthingsboard.client import TBDeviceMqttClient
-import gc
 import secrets
-from functions import initialize_imu, set_color, np_clear, alarm  # Import funktioner
 
-# Initialiser IMU
-imu = initialize_imu()
+# GPS funktionalitet
 
-# Global variabel til at styre alarmstatus
-alarm_enabled = False
+gps_port = 2
+gps_speed = 9600
+uart = UART(gps_port, gps_speed)
+gps = GPS_SIMPLE(uart)
 
-# ThingsBoard MQTT klient
+# ThingsBoard klient
 client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token=secrets.ACCESS_TOKEN)
-
-def handler(req_id, method, params):
-    """
-    Handler callback til RPC fra ThingsBoard.
-    """
-    global alarm_enabled
-    print(f"RPC modtaget: {method}, params: {params}")
-    try:
-        if method == "toggle_alarm":  # Aktiver/deaktiver alarm
-            if params:
-                print("Alarm aktiveret")
-                alarm_enabled = True
-            else:
-                print("Alarm deaktiveret")
-                alarm_enabled = False
-                np_clear()
-
-    except Exception as e:
-        print(f"Fejl i RPC-handler: {e}")
-
-# Forbind til ThingsBoard
 client.connect()
-client.set_server_side_rpc_request_handler(handler)
 print("Forbundet til ThingsBoard")
 
-# Overvåg sensordata og alarmstatus
-try:
+def get_lat_lon():
+    """Henter GPS-koordinater"""
+    if gps.receive_nmea_data():
+        if gps.get_latitude() != -999.0 and gps.get_longitude() != -999.0 and gps.get_validity() == "A":
+            return gps.get_latitude(), gps.get_longitude()
+    return None, None
+
+def send_to_thingsboard(lat, lon):
+    """Sender GPS-koordinater til ThingsBoard"""
+    telemetry = {
+        "latitude": lat,
+        "longitude": lon
+    }
+    client.send_telemetry(telemetry)
+    print(f"Sendt til ThingsBoard: {telemetry}")
+
+def monitor_bike():
+    """Overvåger cyklens status"""
+    last_movement_time = time()
+    stationary_time = 180  # 3 minutter
+
     while True:
-        # Tjek for nye RPC-kommandoer
-        client.check_msg()
+        lat, lon = get_lat_lon()
 
-        if alarm_enabled:  # Kun hvis alarmen er aktiveret
-            values = imu.get_values()
-            if values["acceleration z"] < -15000:  # Detekter bevægelse
-                alarm()  # Kald alarmfunktionen
-            else:
-                np_clear()
+        if lat is not None and lon is not None:
+            current_time = time()
+            print(f"GPS position: Latitude {lat}, Longitude {lon}")
 
-            print(f"Acceleration Z: {values['acceleration z']}")
-        else:
-            np_clear()
+            # Hvis cyklen har stået stille længe nok og nu er i bevægelse
+            if current_time - last_movement_time > stationary_time:
+                print("Cyklen har været stationær i mere end 3 minutter.")
+                send_to_thingsboard(lat, lon)
 
-        # Frigør hukommelse
-        if gc.mem_free() < 2000:
-            gc.collect()
+            # Registrer bevægelse og nulstil tæller
+            if gps.get_speed() > 0:
+                print("Bevægelse detekteret.")
+                last_movement_time = current_time
 
-        sleep(0.1)
+        sleep(1)
 
+try:
+    monitor_bike()
 except KeyboardInterrupt:
     print("Afslutter...")
     client.disconnect()
-    np_clear()
-    buzzer.duty(0)
