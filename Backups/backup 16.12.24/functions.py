@@ -1,7 +1,8 @@
 from time import sleep
-from machine import Pin, PWM, I2C
+from machine import Pin, PWM, I2C, SoftI2C
 from neopixel import NeoPixel
 from mpu6050 import MPU6050
+from ina219_lib import INA219
 
 # Konstanter
 NUM_PIXELS = 12
@@ -19,6 +20,12 @@ def initialize_imu():
     i2c = I2C(0)  # Standard GPIO til SDA/SCL
     imu = MPU6050(i2c)
     return imu
+
+def initialize_ina():
+    """Initialiserer I2C, MPU6050 (IMU) og INA219 (strømsensor)."""
+    i2c = SoftI2C(scl=Pin(18), sda=Pin(19), freq=400000)
+    imu = INA219(i2c)
+    return ina
 
 def set_color(r, g, b):
     """Sætter alle NeoPixels til en bestemt farve."""

@@ -1,5 +1,5 @@
 from time import sleep
-from machine import Pin, PWM, I2C
+from machine import Pin, PWM, I2C, SoftI2C
 from neopixel import NeoPixel
 from mpu6050 import MPU6050
 
@@ -13,12 +13,6 @@ SOLENOID_PIN = 14
 buzzer = PWM(Pin(BUZZER_PIN, Pin.OUT), duty=0)
 np = NeoPixel(Pin(NEOPIXEL_PIN, Pin.OUT), NUM_PIXELS)
 solenoid = Pin(SOLENOID_PIN, Pin.OUT)
-
-def initialize_imu():
-    """Initialiserer I2C, MPU6050 (IMU) og INA219 (strømsensor)."""
-    i2c = I2C(0)  # Standard GPIO til SDA/SCL
-    imu = MPU6050(i2c)
-    return imu
 
 def set_color(r, g, b):
     """Sætter alle NeoPixels til en bestemt farve."""
@@ -34,7 +28,7 @@ def np_clear():
 
 def alarm():
     """Afspiller en alarm med lys og lyd."""
-    for _ in range(5):
+    for i in range(5):
         set_color(255, 0, 0)  # Tænd rødt lys
         buzzer.duty(512)
         buzzer.freq(440)  # Lav tone
@@ -69,7 +63,7 @@ def check_brake(imu, alarm_enabled):
             imu_data = imu.get_values()
             ax = imu_data["acceleration y"]
 
-            if ax < -5000.0:
+            if ax > 4500.0:
                 blink_brake_light(3, 0.2)
             else:
                 set_brake_light(True)

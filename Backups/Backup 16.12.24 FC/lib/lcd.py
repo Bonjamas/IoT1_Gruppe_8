@@ -43,6 +43,7 @@ CCW = -1
 
 # Rotary encoder truth table, Hvilken en man skal bruge afhænger af rotary encoder hardware
 def re_full_step():
+
     global enc_state
 
     encTableFullStep = [
@@ -85,14 +86,14 @@ set_icon(lcd, 0, battery_icon)
 
 # # 2. ikon (pil) 
 # arrow_icon = [0b00000,
-#               0b00100,
-#               0b01110,
-#               0b11111,
-#               0b00100,
-#               0b00100,
-#               0b00100,
-#               0b00000]
-# 
+#                0b00100,
+#                0b01110,
+#                0b11111,
+#                0b00100,
+#                0b00100,
+#                0b00100,
+#                0b00000]
+#  
 # # 2. ikon (pil) gemt på plads 1
 # set_icon(lcd, 1, arrow_icon) 
 

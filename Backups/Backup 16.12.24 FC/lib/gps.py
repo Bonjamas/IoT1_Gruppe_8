@@ -18,14 +18,18 @@ def get_lat_lon():
     lat = lon = None                       	# Opret lat/lon variable med None som standard værdi 
     if gps.receive_nmea_data():            	# check om vi modtager data
                                             # check om dataen er gyldig
-        if gps.get_latitude() != -999.0 and gps.get_longitude() != -999.0 and gps.get_validity() == "A":
-            lat = str(gps.get_latitude())  	# gem latitude i lat variabel
-            lon = str(gps.get_longitude()) 	# gem longitude i lon variabel
+        if  gps.get_validity() == "A":
+            lat = gps.get_latitude()  	# gem latitude i lat variabel
+            lon = gps.get_longitude() 	# gem longitude i lon variabel
             return lat, lon                	# flere retur værdier, skal udpakkes ellers er de i tuple format
-        else:                              	# hvis latitude og longitude er ugyldigt
-            return False
+        elif gps.get_validity() == "V":    # hvis latitude og longitude er ugyldigt
+            lat = gps.get_latitude()  	# gem latitude i lat variabel
+            lon = gps.get_longitude() 	# gem longitude i lon variabel
+            return lat, lon
     else:
-        return False
+        lat = 0.00000
+        lon = 0.00000
+        return lat, lon
     
 # def gps_dtc(gps_vinkel):
 # 
