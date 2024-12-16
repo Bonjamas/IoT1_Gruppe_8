@@ -53,7 +53,7 @@ def handler(req_id, method, params):
             else:
                 # Alarm deaktiveres
                 print("Alarm deactivated")  # Udskriver status for debugging
-                np_clear()  # Slukker Noepixel
+                np_clear()  # Slukker Neopixel
 
         elif method == "toggle_solenoid":  # Hvis serveren beder om at styre solenoiden
             solenoid_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
@@ -104,7 +104,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
         if not check_movement and ticks_ms() - timer > 180000:
             # Hvis der ikke har været bevægelse i over 3 minutter (180.000 ms):
             send_data = False  # Stop med at sende data
-            np_clear()  # Slukker Noepixel
+            np_clear()  # Slukker Neopixel
             lcd.clear()  # Ryd displayet
 
         ### Behandling af data, hvis bevægelse er registreret ###
@@ -115,7 +115,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
                     # Hvis x-aksens acceleration overstiger en farlig tærskel, aktiver alarmen
                     alarm()
                 else:
-                    # Hvis der ikke er nogen kritisk hændelse, slukker Noepixel
+                    # Hvis der ikke er nogen kritisk hændelse, slukker Neopixel
                     np_clear()
             else:
                 # Hvis hverken alarm eller solenoid er aktiveret, tjek for bremseaktivitet
@@ -171,6 +171,6 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
     except KeyboardInterrupt:  # Afslutter programmet ved Ctrl+C
         print("Exiting program...")
         client.disconnect()
-        np_clear() # Slukker Noepixel
+        np_clear() # Slukker Neopixel
         lcd.clear() # Ryd displayet
         sys.exit() # Stopper Kode
