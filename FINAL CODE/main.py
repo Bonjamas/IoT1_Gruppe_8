@@ -7,12 +7,12 @@ from time import sleep, ticks_ms  # Importerer tidsfunktioner, inkl. millisekund
 from uthingsboard.client import TBDeviceMqttClient  # Importerer MQTT-klienten til ThingsBoard
 import gc  # Garbage collector til hukommelsesstyring
 import secrets  # Indeholder fortrolige oplysninger som serveradresse, adgangstoken & WIFI
-from alarm_laas_lys import set_brake_light, check_brake, np_clear, alarm, control_solenoid  # Importerer brugerdefinerede funktioner
-from gps import gps, get_lat_lon  # GPS-modul og funktioner til positionsdata
-from lcd import lcd, set_icon, write, clear  # LCD-styring og visningsfunktioner
+from alarm_laas_lys import set_brake_light, check_brake, np_clear, alarm, control_solenoid  # Importerer funktionerne alarm, lås og Neopixel
+from gps import gps, get_lat_lon  # Importere egne funktioner til GPS-modul
+from lcd import lcd, set_icon, write, clear  # Importere LCD-styring
 from dht11 import get_temperature  # Temperaturmåling fra DHT11-sensoren
 from ina219_lib import INA219  # Strømmåling via INA219-sensor
-from mpu6050 import MPU6050  # Bevægelsessensor
+from mpu6050 import MPU6050  # Bevægelsessensor / Gyroskop
 import sys  # Til systemkommandoer som at afslutte programmet
 
 # Global variables
@@ -31,9 +31,6 @@ client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token=secrets.ACCE
 def handler(req_id, method, params):
     """
     Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard-platformen.
-    
-    ThingsBoard kan sende kommandoer til denne enhed, som håndteres af denne funktion. 
-    Afhængigt af metoden og parametrene, der modtages, udfører funktionen forskellige handlinger.
     
     - req_id: Unikt ID for forespørgslen, bruges til at identificere svaret på serveren.
     - method: Navn på metoden, der skal kaldes, som f.eks. 'toggle_alarm' eller 'toggle_solenoid'.
@@ -73,7 +70,7 @@ def handler(req_id, method, params):
                 np_clear()
 
     except Exception as e:  # Fanger fejl, der kan opstå under håndtering af RPC
-        # Udskriver en fejlmeddelelse, hvis noget går galt, f.eks. hvis parametrene er ugyldige
+        # Udskriver en fejlmeddelelse.
         print(f"Error in RPC handler: {e}")
 
 # Connect to ThingsBoard
@@ -81,7 +78,6 @@ client.connect()  # Forbinder til ThingsBoard-serveren
 client.set_server_side_rpc_request_handler(handler)  # Sætter RPC-handleren
 print("Connected to ThingsBoard")
 
-# Sensor monitoring and telemetry loop
 start = ticks_ms()  # Starter tidstælleren
 check_movement = True  # Variabel til overvågning af bevægelse
 send_data = True  # Variabel til kontrol af datatelemetri
@@ -89,7 +85,7 @@ send_data = True  # Variabel til kontrol af datatelemetri
 while True:  # Uendelig løkke til at overvåge sensorer og sende data
     try:
         # Læsning af sensordata
-        imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050 (f.eks. acceleration på x, y, z-akse)
+        imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050
         client.check_msg()  # Tjekker for indkommende MQTT-beskeder fra ThingsBoard
 
         ### Bevægelsesanalyse (baseret på accelerometerets y-akse) ###
@@ -112,10 +108,10 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
             # Hvis alarm eller solenoid er aktiveret, tjek for kritiske hændelser
             if alarm_enabled or solenoid_enabled:
                 if imu_data.get("acceleration x") < -5000:
-                    # Hvis x-aksens acceleration overstiger en farlig tærskel, aktiver alarmen
+                    # Hvis x-aksens acceleration overstiger -5000, aktiver alarmen
                     alarm()
                 else:
-                    # Hvis der ikke er nogen kritisk hændelse, slukker Neopixel
+                    # Hvis x-aksens acceleration ikke overstiger -5000, sluk Neopixel
                     np_clear()
             else:
                 # Hvis hverken alarm eller solenoid er aktiveret, tjek for bremseaktivitet
@@ -123,7 +119,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
 
             # Opdatering af sensordata og display hvert 5. sekund
             if ticks_ms() - start > 5000:
-                if not alarm_enabled:  # Kun opdatering, hvis alarmen ikke er aktiv
+                if not alarm_enabled:  # Kun opdater, hvis alarmen ikke er aktiv
                     # Hent strøm og spændingsdata fra INA219-sensoren
                     current = ina.get_current()  # Måler den aktuelle strøm
                     voltage = ina.get_bus_voltage()  # Måler spændingen
@@ -137,7 +133,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
 
                     ### Viser data på LCD-skærmen ###
                     lcd.move_to(0, 0)  # Flytter cursor til startposition
-                    lcd.putstr("\x00")  # Viser et ikon (repræsenteret af \x00)
+                    lcd.putstr("\x00")  # Viser et batteri ikon
                     write(0, 1, int(battery_percent), "%")  # Skriver batteriprocent
                     write(0, 5, int(remaining_time), "h")  # Skriver estimeret batteritid
                     write(0, 10, gps.get_course(), "C")  # Skriver kurs (retning)
