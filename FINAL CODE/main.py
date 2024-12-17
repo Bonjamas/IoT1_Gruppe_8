@@ -89,11 +89,11 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
         client.check_msg()  # Tjekker for indkommende MQTT-beskeder fra ThingsBoard
 
         ### Bevægelsesanalyse (baseret på accelerometerets y-akse) ###
-        if -500 < imu_data.get("acceleration y") < 500 and check_movement:
+        if imu_data.get("acceleration y") < 500 and imu_data.get("acceleration y") > -500 and check_movement:
             # Hvis accelerationen på y-aksen er inden for et stille interval, starter en timer
             timer = ticks_ms()  # Registrerer starttidspunkt for stilstand
             check_movement = False  # Marker, at der ikke er bevægelse
-        if abs(imu_data.get("acceleration y")) > 500 and not check_movement:
+        if imu_data.get("acceleration y") > 500 or imu_data.get("acceleration y") < -500 and not check_movement:
             # Hvis y-aksens acceleration overstiger tærsklen, marker bevægelse igen
             check_movement = True
             send_data = True  # Tillader, at data sendes igen
