@@ -68,7 +68,7 @@ def check_brake(imu, alarm_enabled):
             imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050
             ay = imu_data["acceleration y"]  # Læser acceleration langs y-aksen
 
-            if ay > 1000:  # Tærskel for kraftig bremsning
+            if ay > 1000:  # Tærskel for bremsning
                 blink_brake_light(3, 0.2)  # Blinker bremselys tre gange med 0.2 sek pause
             else:
                 set_brake_light(True)  # Holder bremselyset tændt
