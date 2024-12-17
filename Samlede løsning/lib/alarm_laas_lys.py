@@ -51,6 +51,7 @@ def set_brake_light(state):
     """Opdaterer NeoPixel-ringen til bremselys."""
     color = (255, 0, 0) if state else (0, 0, 0)  # Rødt lys hvis aktiv, ellers slukket
     set_color(*color)  # Sætter NeoPixel-ringen til den bestemte farve
+    # "*" bruges til at udpakke tuplen, set_color skal have 3 værdier
 
 def blink_brake_light(blinks, frequency):
     """Blinker bremselyset et bestemt antal gange."""
