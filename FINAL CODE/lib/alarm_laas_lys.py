@@ -2,9 +2,9 @@
 # Christoffer Sander Jørgensen & Benjamin Landling Pedersen
 # Mere info www.gruppe8.dk
 
-from time import sleep  # Importerer sleep-funktion til at pause eksekvering
-from machine import Pin, PWM  # Importerer funktioner til hardwarestyring
-from neopixel import NeoPixel  # Importerer NeoPixel-bibliotek til LED-styring
+from time import sleep  # Importerer sleep
+from machine import Pin, PWM  # Importerer funktioner til GPIO-styring
+from neopixel import NeoPixel  # Importerer NeoPixel bibleotek
 from mpu6050 import MPU6050  # Importerer bibliotek til MPU6050-sensor
 
 # Konstanter
@@ -15,7 +15,7 @@ SOLENOID_PIN = 14  # Pin til solenoid actuator
 
 # Initialisering
 buzzer = PWM(Pin(BUZZER_PIN, Pin.OUT), duty=0)  # Opretter PWM-objekt til buzzer, initialiseret med duty=0 (slukket)
-np = NeoPixel(Pin(NEOPIXEL_PIN, Pin.OUT), NUM_PIXELS)  # Initialiserer NeoPixel på angivet pin og antal pixels
+np = NeoPixel(Pin(NEOPIXEL_PIN, Pin.OUT), NUM_PIXELS)  # Initialiserer NeoPixel og antal pixels
 solenoid = Pin(SOLENOID_PIN, Pin.OUT)  # Initialiserer solenoid som output pin
 
 def set_color(r, g, b):
@@ -67,7 +67,7 @@ def check_brake(imu, alarm_enabled):
             imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050
             ax = imu_data["acceleration y"]  # Læser acceleration langs y-aksen
 
-            if ax > 4500.0:  # Tærskel for kraftig bremsning
+            if ax > 4500.0:  # Tærskel for bremsning
                 blink_brake_light(3, 0.2)  # Blinker bremselys tre gange med 0.2 sek pause
             else:
                 set_brake_light(True)  # Holder bremselyset tændt
@@ -79,7 +79,7 @@ def check_brake(imu, alarm_enabled):
 
 def control_solenoid(state):
     """Styrer solenoid actuator."""
-    solenoid.value(state)  # Sætter solenoiden til den ønskede tilstand (ON/OFF)
+    solenoid.value(state)  # Sætter solenoidens tilstand (ON/OFF)
     if state:  # Hvis solenoiden aktiveres
         print("Solenoid aktiveret")  # Logbesked
         sleep(3)  # Hold solenoiden aktiveret i 3 sekunder
