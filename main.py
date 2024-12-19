@@ -7,7 +7,7 @@ from time import sleep, ticks_ms  # Importerer sleep og ticks_ms
 from uthingsboard.client import TBDeviceMqttClient  # Importerer MQTT-klienten til ThingsBoard
 import gc  # Garbage collector til hukommelsesstyring
 import secrets  # Indeholder fortrolige oplysninger som serveradresse, adgangstoken & WIFI
-from alarm_laas_lys import set_brake_light, check_brake, np_clear, alarm, control_solenoid  # Importerer funktioner for alarm, lås og lys
+from alarm_laas_lys import brake_light, np_clear, alarm, control_solenoid  # Importerer funktioner for alarm, lås og lys
 from gps import gps, get_lat_lon  # importere eget GPS-modul
 from lcd import lcd, set_icon, write, clear  # LCD-styring og visningsfunktioner
 from dht11 import get_temperature  # Temperaturmåling fra DHT11-sensoren
@@ -106,7 +106,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
                     np_clear()
             else:
                 # Hvis hverken alarm eller solenoid er aktiveret, tjek for bremseaktivitet
-                check_brake(imu, alarm_enabled)
+                brake_light(imu, alarm_enabled)
 
             # Opdatering af sensordata og display hvert 5. sekund
             if ticks_ms() - start > 5000:

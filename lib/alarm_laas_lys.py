@@ -32,7 +32,7 @@ def np_clear():
 
 def alarm():
     """Afspiller en alarm med lys og lyd."""
-    for _ in range(5):  # Gentager alarmsekvensen 5 gange
+    for i in range(5):  # Gentager alarmsekvensen 5 gange
         set_color(255, 0, 0)  # Tænd rødt lys
         buzzer.duty(512)  # Sætter buzzerens duty-cycle til 50% (aktiveret)
         buzzer.freq(440)  # Indstiller buzzerens frekvens til 440 Hz (lav tone)
@@ -47,21 +47,7 @@ def alarm():
     np_clear()  # Slukker NeoPixels
     buzzer.duty(0)  # Slukker buzzer
 
-def set_brake_light(state):
-    """Opdaterer NeoPixel-ringen til bremselys."""
-    color = (255, 0, 0) if state else (0, 0, 0)  # Rødt lys hvis aktiv, ellers slukket
-    set_color(*color)  # Sætter NeoPixel-ringen til den bestemte farve
-    # "*" bruges til at udpakke tuplen, set_color skal have 3 værdier
-
-def blink_brake_light(blinks, frequency):
-    """Blinker bremselyset et bestemt antal gange."""
-    for _ in range(blinks):  # Gentager blinket for antal gange angivet
-        set_brake_light(True)  # Tænder bremselyset
-        sleep(frequency)  # Pause i den angivne frekvens
-        set_brake_light(False)  # Slukker bremselyset
-        sleep(frequency)  # Pause igen
-
-def check_brake(imu, alarm_enabled):
+def brake_light(imu, alarm_enabled):
     """Kontrollerer bremselyset baseret på accelerationsdata."""
     if not alarm_enabled:  # Kun tænd bremselys, hvis alarm ikke er aktiveret
         try:
@@ -69,9 +55,14 @@ def check_brake(imu, alarm_enabled):
             ay = imu_data["acceleration y"]  # Læser acceleration langs y-aksen
 
             if ay > 1000:  # Tærskel for bremsning
-                blink_brake_light(3, 0.2)  # Blinker bremselys tre gange med 0.2 sek pause
+                for i in range(3):
+                    set_color(255, 0, 0)
+                    sleep(0.2)
+                    np_clear()
+                    sleep(0.2)
             else:
-                set_brake_light(True)  # Holder bremselyset tændt
+                set_color(255, 0, 0)  # Holder bremselyset tændt
+                
         except Exception as e:
             print(f"Fejl ved aflæsning: {e}")
             set_brake_light(False)
