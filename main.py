@@ -33,16 +33,18 @@ def handler(req_id, method, params):
     Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard-platformen.
     
     - req_id: Unikt ID for forespørgslen, bruges til at identificere svaret på serveren.
-    - method: Navn på metoden, der skal kaldes, som f.eks. 'toggle_alarm' eller 'toggle_solenoid'.
+    - method: Navn på metoden, der skal kaldes, som f.eks. 'toggle_alarm' eller 'toggle_solenoid' .
     - params: De parametre, der følger med RPC-kaldet.
     """
     global alarm_enabled, solenoid_enabled  # Globale variabler, der styrer alarm og solenoid
 
     try:
-        # Tjekker, hvilken metode der kaldes, og udfører handlinger baseret på det.
+        # Konverter parameteren til en boolsk værdi én gang uden bool(int())
+        enabled = params == "1"  # Parametret forventes at være '0' eller '1'
+
         if method == "toggle_alarm":  # Hvis serveren beder om at aktivere/deaktivere alarmen
-            alarm_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
-            # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
+            alarm_enabled = enabled  # Sæt alarmstatus baseret på parameteren
+
             if alarm_enabled:
                 # Alarm aktiveres
                 print("Alarm activated")  # Logbesked
@@ -53,26 +55,25 @@ def handler(req_id, method, params):
                 np_clear()  # Slukker Neopixel
 
         elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden/alarm
-            solenoid_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
-            alarm_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
-            # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
+            solenoid_enabled = enabled  # Sæt solenoidstatus baseret på parameteren
+
             if solenoid_enabled:
-                print("Solenoid & Alarm activated") # Logbesked
-                control_solenoid() # kalder funktion control_solenoid
-                if not alarm_enabled: # hvis alarm ikke allerede er aktiveret
+                print("Solenoid & Alarm activated")  # Logbesked
+                control_solenoid()  # Kalder funktion control_solenoid
+                if not alarm_enabled:  # Hvis alarm ikke allerede er aktiveret
                     alarm_enabled = True  # Aktiver alarm
 
             else:
                 # Solenoiden deaktiveret
-                print("Solenoid & Alarm deactivated") # Logbesked
-                solenoid.value(0) # sikrer, at solenoid slukkes
-                if alarm_enabled: # hvis alarmen var aktiveret
-                    alarm_enabled = False # deaktiver alarmen
-                    np_clear() # Slukker Neopixel
+                print("Solenoid & Alarm deactivated")  # Logbesked
+                solenoid.value(0)  # Sikrer, at solenoid slukkes
+                if alarm_enabled:  # Hvis alarmen var aktiveret
+                    alarm_enabled = False  # Deaktiver alarmen
+                    np_clear()  # Slukker Neopixel
 
     except Exception as e:
         # Håndtering af fejl, der kan opstå i RPC handler
-        print(f"Error in RPC handler: {e}") # Logbesked
+        print(f"Error in RPC handler: {e}")  # Logbesked
 
 # Connect to ThingsBoard
 client.connect()  # Forbinder til ThingsBoard-serveren
