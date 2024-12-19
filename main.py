@@ -30,11 +30,7 @@ client = TBDeviceMqttClient(secrets.SERVER_IP_ADDRESS, access_token=secrets.ACCE
 # RPC Handler
 def handler(req_id, method, params):
     """
-    Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard-platformen.
-    
-    - req_id: Unikt ID for forespørgslen, bruges til at identificere svaret på serveren.
-    - method: Navn på metoden, der skal kaldes, som f.eks. 'toggle_alarm' eller 'toggle_solenoid' .
-    - params: De parametre, der følger med RPC-kaldet.
+    Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard.
     """
     global alarm_enabled, solenoid_enabled  # Globale variabler, der styrer alarm og solenoid
 
@@ -44,27 +40,28 @@ def handler(req_id, method, params):
             if params == True:
                 # Alarm aktiveres
                 print("Alarm activated")  # Logbesked
-                alarm_enabled = True
+                alarm_enabled = True # Aktiverer alarm
                 lcd.clear()  # Rydder LCD-skærmen for at undgå forstyrrende visninger
             elif params == False:
                 # Alarm deaktiveres
                 print("Alarm deactivated")  # Logbesked
-                alarm_enabled = False
+                alarm_enabled = False # Deaktiverer alarm
                 np_clear()  # Slukker Neopixel
 
         elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden/alarm
 
             if params == True:
+                # Solenoiden aktiveret
                 print("Solenoid & Alarm activated")  # Logbesked
                 control_solenoid()  # Kalder funktion control_solenoid
                 if not alarm_enabled:  # Hvis alarm ikke allerede er aktiveret
-                    alarm_enabled = True  # Aktiver alarm
+                    alarm_enabled = True  # Aktiverer alarm
 
             elif params == False:
                 # Solenoiden deaktiveret
                 print("Solenoid & Alarm deactivated")  # Logbesked
                 if alarm_enabled:  # Hvis alarmen var aktiveret
-                    alarm_enabled = False  # Deaktiver alarmen
+                    alarm_enabled = False  # Deaktiverer alarmen
                     np_clear()  # Slukker Neopixel
 
     except Exception as e:
