@@ -53,15 +53,13 @@ def handler(req_id, method, params):
                 # Solenoiden aktiveret
                 print("Solenoid & Alarm activated")  # Logbesked
                 control_solenoid()  # Kalder funktion control_solenoid
-                if not alarm_enabled:  # Hvis alarm ikke allerede er aktiveret
-                    alarm_enabled = True  # Aktiverer alarm
+                alarm_enabled = True  # Aktiverer alarm
 
             elif params == False:
                 # Solenoiden deaktiveret
                 print("Solenoid & Alarm deactivated")  # Logbesked
-                if alarm_enabled:  # Hvis alarmen var aktiveret
-                    alarm_enabled = False  # Deaktiverer alarmen
-                    np_clear()  # Slukker Neopixel
+                alarm_enabled = False  # Deaktiverer alarmen
+                np_clear()  # Slukker Neopixel
 
     except Exception as e:
         # Håndtering af fejl, der kan opstå i RPC handler
