@@ -78,13 +78,8 @@ def check_brake(imu, alarm_enabled):
     else:
         np_clear()  # Slukker NeoPixels, hvis alarm er aktiveret
 
-def control_solenoid(state):
-    """Styrer solenoid actuator."""
-    solenoid.value(state)  # Sætter solenoidens tilstand (ON/OFF)
-    if state:  # Hvis solenoiden aktiveres
-        print("Solenoid aktiveret")  # Logbesked
-        sleep(3)  # Hold solenoiden aktiveret i 3 sekunder
-        solenoid.value(0)  # Slukker solenoiden efter 3 sekunder
-        print("Solenoid deaktiveret automatisk efter 3 sekunder")  # Logbesked
-    else:  # Hvis solenoiden deaktiveres manuelt
-        print("Solenoid deaktiveret manuelt")  # Logbesked
+def control_solenoid():
+    """Styrer solenoid actuator med en aktiveringsperiode."""
+    solenoid.value(1)  # Aktiverer solenoiden
+    sleep(3)  # Hold solenoiden aktiveret i 3 sekunder
+    solenoid.value(0)  # Deaktiverer solenoiden
