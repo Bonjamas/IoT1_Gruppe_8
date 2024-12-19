@@ -52,22 +52,18 @@ def handler(req_id, method, params):
                 print("Alarm deactivated")  # Udskriver status for debugging
                 np_clear()  # Slukker Neopixel
 
-        elif method == "toggle_solenoid":  # Hvis serveren beder om at styre solenoiden
+        elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden / alarm
             solenoid_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
-            # Parametret forventes at være '0' (slukket) eller '1' (tændt).
-            control_solenoid(solenoid_enabled)  # Styrer solenoidens fysiske tilstand (åben/lukket)
-            
-            # Synkroniserer alarmens status med solenoiden
-            # Når solenoiden aktiveres, sættes alarmen automatisk til samme status.
-            alarm_enabled = solenoid_enabled  
-            
-            lcd.clear()  # Rydder LCD
-            # Udskriver tilstanden af solenoiden for debugging:
-            print(f"Solenoid {'activated' if solenoid_enabled else 'deactivated'}")
-            
-            if not solenoid_enabled:
-                # Hvis solenoiden er slukket, ryddes Neopixel
-                np_clear()
+            alarm_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
+            # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
+            if solenoid_enabled and alarm_enabled:
+                print("Solenoid & Alarm activated") # Udskriver status for debugging
+                lcd.clear() # Rydder LCD
+
+            else:
+                # Solenoiden deaktiveret
+                print("Solenoid & Alarm deactivated") # Udskriver status for debugging
+                np_clear() # Slukker Neopixel
 
     except Exception as e:  # Fanger fejl, der kan opstå under håndtering af RPC
         # Udskriver en fejlmeddelelse
