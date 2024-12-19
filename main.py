@@ -45,11 +45,11 @@ def handler(req_id, method, params):
             # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
             if alarm_enabled:
                 # Alarm aktiveres
-                print("Alarm activated")  # Udskriver status for debugging
+                print("Alarm activated")  # Logbesked
                 lcd.clear()  # Rydder LCD-skærmen for at undgå forstyrrende visninger
             else:
                 # Alarm deaktiveres
-                print("Alarm deactivated")  # Udskriver status for debugging
+                print("Alarm deactivated")  # Logbesked
                 np_clear()  # Slukker Neopixel
 
         elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden/alarm
@@ -57,12 +57,12 @@ def handler(req_id, method, params):
             alarm_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
             # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
             if solenoid_enabled and alarm_enabled:
-                print("Solenoid & Alarm activated") # Udskriver status for debugging
+                print("Solenoid & Alarm activated") # Logbesked
                 lcd.clear() # Rydder LCD
 
             else:
                 # Solenoiden deaktiveret
-                print("Solenoid & Alarm deactivated") # Udskriver status for debugging
+                print("Solenoid & Alarm deactivated") # Logbesked
                 np_clear() # Slukker Neopixel
 
     except Exception as e:  # Fanger fejl, der kan opstå under håndtering af RPC
@@ -72,7 +72,7 @@ def handler(req_id, method, params):
 # Connect to ThingsBoard
 client.connect()  # Forbinder til ThingsBoard-serveren
 client.set_server_side_rpc_request_handler(handler)  # Sætter RPC-handleren
-print("Connected to ThingsBoard")
+print("Connected to ThingsBoard") # Logbesked
 
 start = ticks_ms()  # Starter tidstælleren
 check_movement = True  # Variabel til overvågning af bevægelse
