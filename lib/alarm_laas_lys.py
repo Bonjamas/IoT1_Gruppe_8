@@ -50,21 +50,18 @@ def alarm():
 def brake_light(imu, alarm_enabled):
     """Kontrollerer bremselyset baseret på accelerationsdata."""
     if not alarm_enabled:  # Kun tænd bremselys, hvis alarm ikke er aktiveret
-        try:
-            imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050
-            ay = imu_data["acceleration y"]  # Læser acceleration langs y-aksen
+        imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050
+        ay = imu_data["acceleration y"]  # Læser acceleration langs y-aksen
 
-            if ay > 1000:  # Tærskel for bremsning
-                for i in range(3):
-                    set_color(255, 0, 0)
-                    sleep(0.2)
-                    np_clear()
-                    sleep(0.2)
-            else:
-                set_color(255, 0, 0)  # Holder bremselyset tændt
+        if ay > 1000:  # Tærskel for bremsning
+            for i in range(3):
+                set_color(255, 0, 0)
+                sleep(0.2)
+                np_clear()
+                sleep(0.2)
+        else:
+            set_color(255, 0, 0)  # Holder bremselyset tændt
                 
-        except Exception as e:
-            print(f"Fejl ved aflæsning: {e}")
     else:
         np_clear()  # Slukker NeoPixels, hvis alarm er aktiveret
 
