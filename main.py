@@ -39,43 +39,37 @@ def handler(req_id, method, params):
     global alarm_enabled, solenoid_enabled  # Globale variabler, der styrer alarm og solenoid
 
     try:
-        # Konverter parameteren til en boolsk værdi én gang uden bool(int())
-        enabled = params == "1"  # Parametret forventes at være '0' eller '1'
-
         if method == "toggle_alarm":  # Hvis serveren beder om at aktivere/deaktivere alarmen
-            alarm_enabled = enabled  # Sæt alarmstatus baseret på parameteren
 
-            if alarm_enabled:
+            if params == True:
                 # Alarm aktiveres
                 print("Alarm activated")  # Logbesked
                 alarm_enabled = True
                 lcd.clear()  # Rydder LCD-skærmen for at undgå forstyrrende visninger
-            else:
+            elif params == False:
                 # Alarm deaktiveres
                 print("Alarm deactivated")  # Logbesked
                 alarm_enabled = False
                 np_clear()  # Slukker Neopixel
 
         elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden/alarm
-            solenoid_enabled = enabled  # Sæt solenoidstatus baseret på parameteren
 
-            if solenoid_enabled:
+            if params == True:
                 print("Solenoid & Alarm activated")  # Logbesked
                 control_solenoid()  # Kalder funktion control_solenoid
                 if not alarm_enabled:  # Hvis alarm ikke allerede er aktiveret
                     alarm_enabled = True  # Aktiver alarm
 
-            else:
+            elif params == False:
                 # Solenoiden deaktiveret
                 print("Solenoid & Alarm deactivated")  # Logbesked
-                solenoid.value(0)  # Sikrer, at solenoid slukkes
                 if alarm_enabled:  # Hvis alarmen var aktiveret
                     alarm_enabled = False  # Deaktiver alarmen
                     np_clear()  # Slukker Neopixel
 
     except Exception as e:
         # Håndtering af fejl, der kan opstå i RPC handler
-        print(f"Error in RPC handler: {e}")  # Logbesked
+        print(e)  # Logbesked
 
 # Connect to ThingsBoard
 client.connect()  # Forbinder til ThingsBoard-serveren
@@ -109,7 +103,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
 
         ### Behandling af data, hvis bevægelse er registreret ###
         if send_data:
-            if alarm_enabled or solenoid_enabled:
+            if alarm_enabled:
                 if imu_data.get("acceleration x") < -5000:
                     # Hvis x-aksens acceleration overstiger -5000, aktiver alarmen
                     alarm()
