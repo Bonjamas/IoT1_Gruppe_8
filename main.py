@@ -48,10 +48,12 @@ def handler(req_id, method, params):
             if alarm_enabled:
                 # Alarm aktiveres
                 print("Alarm activated")  # Logbesked
+                alarm_enabled = True
                 lcd.clear()  # Rydder LCD-skærmen for at undgå forstyrrende visninger
             else:
                 # Alarm deaktiveres
                 print("Alarm deactivated")  # Logbesked
+                alarm_enabled = False
                 np_clear()  # Slukker Neopixel
 
         elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden/alarm
