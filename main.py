@@ -18,7 +18,7 @@ import sys  # Til systemkommandoer som at afslutte programmet
 # Global variable
 alarm_enabled = False  # Styrer alarmens aktivering/deaktivering
 
-# Initialization
+# Initialiserer
 i2c = I2C(0)  # Initialiserer I2C-kommunikation på standard SDA/SCL pins
 imu = MPU6050(i2c)  # Initialiserer MPU6050 bevægelsessensor
 ina = INA219(i2c)  # Initialiserer INA219 strøm- og spændingssensor
@@ -65,7 +65,7 @@ def handler(req_id, method, params):
         # Håndtering af fejl, der kan opstå i RPC handler
         print(e)  # Logbesked
 
-# Connect to ThingsBoard
+# Forbind til ThingsBoard
 client.connect()  # Forbinder til ThingsBoard-serveren
 client.set_server_side_rpc_request_handler(handler)  # Sætter RPC-handleren
 print("Connected to ThingsBoard") # Logbesked
