@@ -56,14 +56,19 @@ def handler(req_id, method, params):
             solenoid_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
             alarm_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
             # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
-            if solenoid_enabled and alarm_enabled:
+            if solenoid_enabled:
                 print("Solenoid & Alarm activated") # Logbesked
-                lcd.clear() # Rydder LCD
+                control_solenoid() # kalder funktion control_solenoid
+                if not alarm_enabled: # hvis alarm ikke allerede er aktiveret
+                    alarm_enabled = True  # Aktiver alarm
 
             else:
                 # Solenoiden deaktiveret
                 print("Solenoid & Alarm deactivated") # Logbesked
-                np_clear() # Slukker Neopixel
+                solenoid.value(0) # sikrer, at solenoid slukkes
+                if alarm_enabled: # hvis alarmen var aktiveret
+                    alarm_enabled = False # deaktiver alarmen
+                    np_clear() # Slukker Neopixel
 
     except Exception as e:
         # Håndtering af fejl, der kan opstå i RPC handler
