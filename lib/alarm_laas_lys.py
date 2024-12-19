@@ -65,7 +65,6 @@ def brake_light(imu, alarm_enabled):
                 
         except Exception as e:
             print(f"Fejl ved aflæsning: {e}")
-            set_brake_light(False)
     else:
         np_clear()  # Slukker NeoPixels, hvis alarm er aktiveret
 
