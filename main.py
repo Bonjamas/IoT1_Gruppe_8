@@ -65,9 +65,9 @@ def handler(req_id, method, params):
                 print("Solenoid & Alarm deactivated") # Logbesked
                 np_clear() # Slukker Neopixel
 
-    except Exception as e:  # Fanger fejl, der kan opstå under håndtering af RPC
-        # Udskriver en fejlmeddelelse
-        print(f"Error in RPC handler: {e}")
+    except Exception as e:
+        # Håndtering af fejl, der kan opstå i RPC handler
+        print(f"Error in RPC handler: {e}") # Logbesked
 
 # Connect to ThingsBoard
 client.connect()  # Forbinder til ThingsBoard-serveren
@@ -159,7 +159,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
     
     except Exception as e:
         # Håndtering af fejl, der kan opstå i løkken
-        print(e)  # Udskriver fejlmeddelelse til debugging
+        print(e)  # Logbesked
 
     except KeyboardInterrupt:  # Afslutter programmet ved Ctrl+C
         print("Exiting program...")
