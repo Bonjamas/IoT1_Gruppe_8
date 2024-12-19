@@ -15,7 +15,7 @@ from ina219_lib import INA219  # Strømmåling via INA219-sensor
 from mpu6050 import MPU6050  # Bevægelsessensor
 import sys  # Til systemkommandoer som at afslutte programmet
 
-# Global variables
+# Global variable
 alarm_enabled = False  # Styrer alarmens aktivering/deaktivering
 
 # Initialization
