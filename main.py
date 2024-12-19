@@ -52,7 +52,7 @@ def handler(req_id, method, params):
                 print("Alarm deactivated")  # Udskriver status for debugging
                 np_clear()  # Slukker Neopixel
 
-        elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden / alarm
+        elif method == "toggle_solenoid":  # Hvis serveren beder om at aktivere/deaktivere solenoiden/alarm
             solenoid_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
             alarm_enabled = bool(int(params))  # Konverterer parameteren til en boolsk værdi
             # Parametret forventes at være '0' eller '1', som konverteres til False eller True.
