@@ -17,7 +17,6 @@ import sys  # Til systemkommandoer som at afslutte programmet
 
 # Global variables
 alarm_enabled = False  # Styrer alarmens aktivering/deaktivering
-solenoid_enabled = False  # Styrer solenoidens aktivering/deaktivering
 
 # Initialization
 i2c = I2C(0)  # Initialiserer I2C-kommunikation på standard SDA/SCL pins
@@ -32,7 +31,7 @@ def handler(req_id, method, params):
     """
     Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard.
     """
-    global alarm_enabled, solenoid_enabled  # Globale variabler, der styrer alarm og solenoid
+    global alarm_enabled # Globale variable der styrer alarm
 
     try:
         if method == "toggle_alarm":  # Hvis serveren beder om at aktivere/deaktivere alarmen
