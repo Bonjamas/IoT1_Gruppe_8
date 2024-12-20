@@ -4,9 +4,9 @@
 
 # LCD funktionalitet
 
-from machine import Pin, PWM  # Importerer PWM og Pin-klasse til GPIO-styring
-from time import sleep  # Importerer sleep-funktion
-from gpio_lcd import GpioLcd  # Importerer LCD-biblioteket
+from machine import Pin, PWM  # Importerer PWM og Pin-klasse
+from time import sleep  # Importerer sleep
+from gpio_lcd import GpioLcd  # Importerer LCD-bibliotek
 
 # Instans af LCD-objekt
 lcd = GpioLcd(rs_pin=Pin(27), enable_pin=Pin(25),  # Initialiserer LCD med de nødvendige pins

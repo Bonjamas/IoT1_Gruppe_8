@@ -4,8 +4,8 @@
 
 # DHT11 funktionalitet
 
-from machine import Pin  # Importerer Pin-klassen til GPIO-styring
-from time import sleep  # Importerer sleep-funktion
+from machine import Pin  # Importerer Pin-klasse
+from time import sleep  # Importerer sleep
 import dht  # Importerer bibliotek til DHT-sensorer
 
 ########################################
@@ -14,7 +14,7 @@ dht11_pin = 0  # Angiver GPIO for DHT11-sensoren
 
 ########################################
 # OBJECT
-dht11 = dht.DHT11(Pin(dht11_pin)) # Opretter et objekt for at kommunikere med sensoren
+dht11 = dht.DHT11(Pin(dht11_pin)) # Opretter et objekt til sensor
 
 def get_temperature():
    """

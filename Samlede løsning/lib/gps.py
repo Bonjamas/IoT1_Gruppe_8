@@ -14,9 +14,6 @@ gps_speed = 9600  # Angiver UART-baudrate
 uart = UART(gps_port, gps_speed)  # Initialiserer UART med den angivne port og hastighed
 gps = GPS_SIMPLE(uart)  # Opretter GPS-objekt
 
-# gps_course = gps.get_course()  # (Kommenteret ud) Henter kursen via GPS'ens get_course-metode
-# retning = gps_dtc(gps_course)  # (Kommenteret ud) Bestemmer retning baseret på kurs
-
 def get_lat_lon():
     """
     Henter GPS-koordinater (latitude og longitude) fra GPS'en.
@@ -38,19 +35,3 @@ def get_lat_lon():
         lat = 0.00000
         lon = 0.00000
         return lat, lon  # Returnerer nulkoordinater som en tuple
-
-# def gps_dtc(gps_vinkel):
-#     """
-#     (Kommenteret ud) Bestemmer retning baseret på GPS-kursvinkel.
-#     """
-#     gps_vinkel = gps_vinkel % 360  # Sørger for, at vinkel altid er inden for 0-359 grader
-#     if (gps_vinkel >= 337.5 or gps_vinkel < 22.5):  # Bestemmer, om vinklen er mod nord
-#         return "Nord"
-#     elif (22.5 <= gps_vinkel < 112.5):  # Bestemmer, om vinklen er mod øst
-#         return "Øst"
-#     elif (112.5 <= gps_vinkel < 202.5):  # Bestemmer, om vinklen er mod syd
-#         return "Syd"
-#     elif (202.5 <= gps_vinkel < 292.5):  # Bestemmer, om vinklen er mod vest
-#         return "Vest"
-#     else:
-#         return "Opdateres"  # Standardværdi, hvis vinklen er ukendt

@@ -2,8 +2,8 @@
 # Christoffer Sander Jørgensen & Benjamin Landling Pedersen
 # Mere info www.gruppe8.dk
 
-from time import sleep  # Importerer sleep-funktion
-from machine import Pin, PWM  # Importerer funktioner til GPIO-styring og PWM
+from time import sleep  # Importerer sleep
+from machine import Pin, PWM  # Importerer Pin og PWM
 from neopixel import NeoPixel  # Importerer NeoPixel-bibliotek
 from mpu6050 import MPU6050  # Importerer bibliotek til MPU6050-sensor
 
@@ -38,7 +38,7 @@ def alarm():
         buzzer.freq(440)  # Indstiller buzzerens frekvens til 440 Hz (lav tone)
         sleep(0.5)  # Pause i 0.5 sekunder
 
-        np_clear()  # Sluk lyset
+        set_color(0, 0, 0)  # Sluk lyset
         buzzer.duty(512)  # Beholder duty-cycle
         buzzer.freq(1012)  # Indstiller frekvens til 1012 Hz (høj tone)
         sleep(0.5)  # Pause i 0.5 sekunder
@@ -58,7 +58,7 @@ def brake_light(imu, alarm_enabled):
             for i in range(3):
                 set_color(255, 0, 0)
                 sleep(0.2)
-                np_clear()
+                set_color(0, 0, 0)
                 sleep(0.2)
         else:
             set_color(255, 0, 0)  # Holder bremselyset tændt

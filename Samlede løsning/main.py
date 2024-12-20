@@ -2,18 +2,18 @@
 # Christoffer Sander Jørgensen & Benjamin Landling Pedersen
 # Mere info www.gruppe8.dk
 
-from machine import Pin, I2C  # Importerer Pin-klasse til GPIO-styring og I2C-kommunikation
+from machine import Pin, I2C  # Importerer Pin-klasse og I2C-kommunikation
 from time import sleep, ticks_ms  # Importerer sleep og ticks_ms
 from uthingsboard.client import TBDeviceMqttClient  # Importerer MQTT-klienten til ThingsBoard
 import gc  # Garbage collector til hukommelsesstyring
 import secrets  # Indeholder fortrolige oplysninger som serveradresse, adgangstoken & WIFI
 from alarm_laas_lys import brake_light, np_clear, alarm, control_solenoid  # Importerer funktioner for alarm, lås og lys
 from gps import gps, get_lat_lon  # importere eget GPS-modul
-from lcd import lcd, set_icon, write, clear  # LCD-styring og visningsfunktioner
+from lcd import lcd, set_icon, write, clear  # LCD-styring
 from dht11 import get_temperature  # Temperaturmåling fra DHT11-sensoren
 from ina219_lib import INA219  # Strømmåling via INA219-sensor
 from mpu6050 import MPU6050  # Bevægelsessensor
-import sys  # Til systemkommandoer som at afslutte programmet
+import sys  # Importere sys
 
 # Global variable
 alarm_enabled = False  # Styrer alarmens aktivering/deaktivering
@@ -38,12 +38,12 @@ def handler(req_id, method, params):
 
             if params == True:
                 # Alarm aktiveres
-                print("Alarm activated")  # Logbesked
+                print("Alarm activated")
                 alarm_enabled = True # Aktiverer alarm
-                lcd.clear()  # Rydder LCD-skærmen for at undgå forstyrrende visninger
+                lcd.clear()  # Rydder LCD
             elif params == False:
                 # Alarm deaktiveres
-                print("Alarm deactivated")  # Logbesked
+                print("Alarm deactivated")
                 alarm_enabled = False # Deaktiverer alarm
                 np_clear()  # Slukker Neopixel
 
@@ -51,24 +51,24 @@ def handler(req_id, method, params):
 
             if params == True:
                 # Solenoiden aktiveret
-                print("Solenoid & Alarm activated")  # Logbesked
+                print("Solenoid & Alarm activated")
                 control_solenoid()  # Kalder funktion control_solenoid
                 alarm_enabled = True  # Aktiverer alarm
 
             elif params == False:
                 # Solenoiden deaktiveret
-                print("Solenoid & Alarm deactivated")  # Logbesked
+                print("Solenoid & Alarm deactivated")
                 alarm_enabled = False  # Deaktiverer alarmen
                 np_clear()  # Slukker Neopixel
 
     except Exception as e:
         # Håndtering af fejl, der kan opstå i RPC handler
-        print(e)  # Logbesked
+        print(e) 
 
 # Forbind til ThingsBoard
 client.connect()  # Forbinder til ThingsBoard-serveren
 client.set_server_side_rpc_request_handler(handler)  # Sætter RPC-handleren
-print("Connected to ThingsBoard") # Logbesked
+print("Connected to ThingsBoard")
 
 start = ticks_ms()  # Starter tidstælleren
 check_movement = True  # Variabel til overvågning af bevægelse
@@ -87,13 +87,13 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
             check_movement = False  # Marker, at der ikke er bevægelse
         if imu_data.get("acceleration y") > 500 or imu_data.get("acceleration y") < -500 and not check_movement:
             # Hvis y-aksens acceleration overstiger tærsklen, marker bevægelse igen
-            check_movement = True
+            check_movement = True # kigger efter bevægelse
             send_data = True  # Tillader, at data sendes igen
         if not check_movement and ticks_ms() - timer > 180000:
             # Hvis der ikke har været bevægelse i over 3 minutter (180.000 ms):
             send_data = False  # Stop med at sende data
             np_clear()  # Rydder Neopixel
-            lcd.clear()  # Rydder displayet
+            lcd.clear()  # Rydder LCD
 
         ### Behandling af data, hvis bevægelse er registreret ###
         if send_data:
@@ -108,7 +108,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
                 # Hvis hverken alarm eller solenoid er aktiveret, tjek for bremseaktivitet
                 brake_light(imu, alarm_enabled)
 
-            # Opdatering af sensordata og display hvert 5. sekund
+            # Opdatering af sensordata og LCD hvert 5. sekund
             if ticks_ms() - start > 5000:
                 if not alarm_enabled:  # Kun opdater hvis alarmen ikke er aktiv
                     # Hent strøm og spændingsdata fra INA219-sensoren
@@ -126,7 +126,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
                     lcd.move_to(0, 0)  # Flytter cursor til startposition
                     lcd.putstr("\x00")  # Viser batteri ikonet
                     write(0, 1, int(battery_percent), "%")  # Skriver batteriprocent
-                    write(0, 5, int(remaining_time), "h")  # Skriver estimeret batteritid
+                    write(0, 5, int(remaining_time), "h")  # Skriver estimeret batteritid i timer
                     write(0, 10, gps.get_course(), "C")  # Skriver kurs (retning)
                     write(1, 0, round(gps.get_speed(), 2), " Km/t")  # Skriver hastighed i km/t
                     write(1, 10, int(get_temperature()), " temp")  # Skriver temperatur
@@ -155,7 +155,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
     
     except Exception as e:
         # Håndtering af fejl, der kan opstå i løkken
-        print(e)  # Logbesked
+        print(e)
 
     except KeyboardInterrupt:  # Afslutter programmet ved Ctrl+C
         print("Exiting program...")
