@@ -106,7 +106,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
                     np_clear()
             else:
                 # Hvis hverken alarm eller solenoid er aktiveret, tjek for bremseaktivitet
-                brake_light(imu, alarm_enabled)
+                brake_light()
 
             # Opdatering af sensordata og display hvert 5. sekund
             if ticks_ms() - start > 5000:
