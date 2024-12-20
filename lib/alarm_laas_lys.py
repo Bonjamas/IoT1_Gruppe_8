@@ -18,10 +18,6 @@ buzzer = PWM(Pin(BUZZER_PIN, Pin.OUT), duty=0)  # Opretter PWM-objekt til buzzer
 np = NeoPixel(Pin(NEOPIXEL_PIN, Pin.OUT), NUM_PIXELS)  # Initialiserer NeoPixel
 solenoid = Pin(SOLENOID_PIN, Pin.OUT)  # Initialiserer solenoid
 
-# Global variable
-alarm_enabled = False  # Styrer alarmens aktivering/deaktivering
-imu = None # Initialiserer imu som en grobal variabele
-
 def set_color(r, g, b):
     """Sætter alle NeoPixels til en bestemt farve."""
     for i in range(NUM_PIXELS):  # Gennemgår alle pixels
@@ -51,8 +47,9 @@ def alarm():
     np_clear()  # Slukker NeoPixels
     buzzer.duty(0)  # Slukker buzzer
 
-def brake_light():
+def brake_light(imu, alarm_enabled):
     """Kontrollerer bremselyset baseret på accelerationsdata."""
+    
     if not alarm_enabled:  # Kun tænd bremselys, hvis alarm ikke er aktiveret
         imu_data = imu.get_values()  # Henter accelerometerdata fra MPU6050
         ay = imu_data["acceleration y"]  # Læser acceleration langs y-aksen

@@ -31,7 +31,7 @@ def handler(req_id, method, params):
     """
     Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard.
     """
-    global alarm_enabled # Global variable der styrer alarm
+    global alarm_enabled # Importere global variable
 
     try:
         if method == "toggle_alarm":  # Hvis serveren beder om at aktivere/deaktivere alarmen
@@ -106,7 +106,7 @@ while True:  # Uendelig løkke til at overvåge sensorer og sende data
                     np_clear()
             else:
                 # Hvis hverken alarm eller solenoid er aktiveret, tjek for bremseaktivitet
-                brake_light()
+                brake_light(imu, alarm_enabled)
 
             # Opdatering af sensordata og display hvert 5. sekund
             if ticks_ms() - start > 5000:
