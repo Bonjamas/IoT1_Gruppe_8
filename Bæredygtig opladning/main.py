@@ -16,6 +16,8 @@ from time import sleep
 ################ PINS ################
 ledRed = Pin(26, Pin.OUT)
 ledGreen = Pin(13, Pin.OUT)
+ledYellow = Pin(12, Pin.OUT)
+ledYellow.on()
 relay = Pin(17, Pin.OUT)
 
 ########### FUNKTIONER ###########
@@ -44,6 +46,10 @@ while True:
         print("Der er ikke grøn strøm:", greenPower , " CO2/kwh")
         ledRed.on()
         relayOnOff(0)
+    else:
+        ledRed.off()
+        ledYellow.on()
+        ledGreen.off()
         
     sleep(30)
             
