@@ -31,7 +31,7 @@ def handler(req_id, method, params):
     """
     Håndterer fjernprocedurens kald (RPC) forespørgsler fra ThingsBoard.
     """
-    global alarm_enabled # Globale variable der styrer alarm
+    global alarm_enabled # Global variable der styrer alarm
 
     try:
         if method == "toggle_alarm":  # Hvis serveren beder om at aktivere/deaktivere alarmen
